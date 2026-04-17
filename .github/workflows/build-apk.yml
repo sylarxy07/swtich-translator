@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Uyari gurultusu (Node 20); derlemeyi etkilemez
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
 
@@ -77,13 +80,42 @@ jobs:
           sed -i 's/\r$//' gradlew || true
           chmod +x gradlew
 
+      # Paralel proje derlemesi + agir native merge bazi runner'larda exit 1 uretir
+      - name: CI Gradle ayarlari
+        working-directory: ${{ steps.proj.outputs.dir }}
+        run: echo "org.gradle.parallel=false" >> gradle.properties
+
       - name: Derle
         working-directory: ${{ steps.proj.outputs.dir }}
         env:
           ORG_GRADLE_JAVA_INSTALLATIONS_AUTO_DOWNLOAD: "false"
           GRADLE_OPTS: "-Xmx4096m -Dfile.encoding=UTF-8"
           _JAVA_OPTIONS: "-Xmx4096m"
-        run: ./gradlew assembleDebug --no-daemon --stacktrace --no-parallel
+        shell: bash
+        run: |
+          set -eo pipefail
+          ./gradlew assembleDebug --no-daemon --stacktrace --no-build-cache 2>&1 | tee gradle-ci.log
+
+      - name: Hata logu (Derle basarisizsa)
+        if: failure()
+        working-directory: ${{ steps.proj.outputs.dir }}
+        run: |
+          echo "::group::What went wrong (Gradle)"
+          grep -A 35 "What went wrong" gradle-ci.log 2>/dev/null || echo "(bulunamadi)"
+          echo "::endgroup::"
+          echo "::group::Failed task"
+          grep -B 2 -A 30 "Execution failed for task" gradle-ci.log 2>/dev/null | head -80 || true
+          echo "::endgroup::"
+          echo "::group::Son 100 satir"
+          tail -100 gradle-ci.log 2>/dev/null || true
+          echo "::endgroup::"
+
+      - name: Tam Gradle logu indir (hata olunca)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-full-log
+          path: "**/gradle-ci.log"
 
       - name: APK yolu
         id: apk
