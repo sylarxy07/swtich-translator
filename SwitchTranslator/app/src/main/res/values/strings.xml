@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Switch Translator</string>
+    <string name="btn_start">Çeviriyi Başlat</string>
+    <string name="camera_permission_rationale">Metin okumak için kamera izni gerekli.</string>
+    <string name="ocr_no_text">Yazı bulunamadı.</string>
+    <string name="ocr_read_prefix">Okunan:</string>
+    <string name="overlay_box_description">OCR okuma alanı</string>
+    <string name="tesseract_init_failed">Tesseract başlatılamadı.</string>
+    <string name="label_original">Orijinal (OCR)</string>
+    <string name="label_turkish">Türkçe</string>
+    <string name="translation_failed">Çeviri yapılamadı.</string>
+    <string name="model_download_hint">İlk kullanımda çeviri modelleri indirilir (bir kez; sonra çevrimdışı çalışır).</string>
+    <string name="status_ready">Hazır</string>
+    <string name="status_processing">İşleniyor…</string>
+</resources>
