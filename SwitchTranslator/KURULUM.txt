@@ -1,0 +1,24 @@
+Switch Translator — APK almak (Android Studio YOK, kamu PC sorunu yok)
+================================================================
+
+YOL A — GitHub ile (onerilen)
+-----------------------------
+1. Kendi GitHub hesabinda yeni bos repo ac (ornek: SwitchTranslator).
+2. Bu projeyi zipleyip ac veya "git init" + push yap.
+3. GitHub'da repo -> Actions -> "Build debug APK" -> Run workflow (veya push zaten tetikler).
+4. Is bitince Actions -> en son calisma -> Artifacts -> SwitchTranslator-debug.zip indir.
+5. Zip icindeki app-debug.apk dosyasini telefona at ve kur.
+
+Not: Kamu PC SSL ile Gradle calismaz; GitHub sunuculari indirir, sen sadece APK indirirsin.
+
+YOL B — Ev / baska agda yerel derleme
+-------------------------------------
+1. Temurin JDK 17 ZIP (kurulumsuz) kullanici klasorune ac.
+2. gradle.properties icine: org.gradle.java.home=C:/Users/.../jdk-17...
+3. Proje klasorunde: gradlew.bat assembleDebug
+4. app\build\outputs\apk\debug\app-debug.apk
+
+Telefona yukleme
+----------------
+USB: platform-tools\adb install -r app-debug.apk
+Veya APK dosyasini telefona kopyala, dosyadan ac.
